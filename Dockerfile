@@ -3,7 +3,7 @@ from httpd:2.4
 MAINTAINER LinShare <linshare@linagora.com>
 
 ARG VERSION="2.0.0"
-ARG CHANNEL=snapshots
+ARG CHANNEL=releases
 ARG EXT="com"
 
 RUN apt-get update && apt-get install wget bzip2 -y && apt-get clean && \
