@@ -6,6 +6,8 @@ ARG VERSION="2.1.0-1"
 ARG CHANNEL=releases
 ARG EXT="com"
 
+ENV LINSHARE_VERSION=$VERSION
+
 RUN apt-get update && apt-get install wget bzip2 -y && apt-get clean && \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/local/apache2/htdocs/index.html
 
