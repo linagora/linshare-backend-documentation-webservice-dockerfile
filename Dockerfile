@@ -50,8 +50,9 @@ chown -R www-data /usr/local/apache2/htdocs/linshare-core && \
 mv -v /usr/local/apache2/htdocs/linshare-core /usr/local/apache2/htdocs/documentation-ws-api-userv2 && \
 rm -f linshare.tar.bz2
 
-COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./httpd.extra.conf /usr/local/apache2/conf/extra/httpd.extra.conf
+RUN cat /usr/local/apache2/conf/extra/httpd.extra.conf >> /usr/local/apache2/conf/httpd.conf
+
 COPY ./linshare-documentation.conf /usr/local/apache2/conf/extra/linshare-documentation.conf
 
-EXPOSE 443
-
+EXPOSE 80
