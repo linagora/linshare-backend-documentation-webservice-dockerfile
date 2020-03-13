@@ -1,60 +1,23 @@
-from httpd:2.4
+FROM swaggerapi/swagger-ui
 
 MAINTAINER LinShare <linshare@linagora.com>
 
-ARG VERSION="2.3.0"
-ARG CHANNEL=releases
-ARG EXT="com"
+ARG VERSION="4.0.0-SNAPSHOT"
+ARG CHANNEL=snapshots
 
 ENV LINSHARE_VERSION=$VERSION
+RUN apk add wget bzip2
 
-RUN apt-get update && apt-get install wget bzip2 -y && apt-get clean && \
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/local/apache2/htdocs/index.html
-
-RUN URL="https://nexus.linagora.${EXT}/service/local/artifact/maven/content?r=linshare-${CHANNEL}&g=org.linagora.linshare&a=linshare-core&c=documentation-ws-api-delegation&v=${VERSION}"; \
+RUN URL="https://nexus.linagora.com/service/local/artifact/maven/content?r=linshare-${CHANNEL}&g=org.linagora.linshare&a=linshare-core&c=documentation-webservices&v=${VERSION}"; \
  wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2 "${URL}&p=tar.bz2" \
- && wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2.sha1 "${URL}&p=tar.bz2.sha1" \
- && sed -i 's#^\(.*\)#\1\tlinshare.tar.bz2#' linshare.tar.bz2.sha1 \
- && sha1sum -c linshare.tar.bz2.sha1 --quiet && rm -f linshare.tar.bz2.sha1
+ -O linshare.tar.bz2 "${URL}&p=tar.bz2"
 
-RUN tar -jxf linshare.tar.bz2 -C /usr/local/apache2/htdocs && \
-chown -R www-data /usr/local/apache2/htdocs/linshare-core && \
-mv -v /usr/local/apache2/htdocs/linshare-core /usr/local/apache2/htdocs/documentation-ws-api-delegation && \
-rm -f linshare.tar.bz2
+RUN tar -jxf linshare.tar.bz2 && mv linshare-core /swagger && rm -f linshare.tar.bz2 /swagger/*.yaml
 
-
-RUN URL="https://nexus.linagora.${EXT}/service/local/artifact/maven/content?r=linshare-${CHANNEL}&g=org.linagora.linshare&a=linshare-core&c=documentation-ws-api-userv1&v=${VERSION}"; \
- wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2 "${URL}&p=tar.bz2" \
- && wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2.sha1 "${URL}&p=tar.bz2.sha1" \
- && sed -i 's#^\(.*\)#\1\tlinshare.tar.bz2#' linshare.tar.bz2.sha1 \
- && sha1sum -c linshare.tar.bz2.sha1 --quiet && rm -f linshare.tar.bz2.sha1
-
-RUN tar -jxf linshare.tar.bz2 -C /usr/local/apache2/htdocs && \
-chown -R www-data /usr/local/apache2/htdocs/linshare-core && \
-mv -v /usr/local/apache2/htdocs/linshare-core /usr/local/apache2/htdocs/documentation-ws-api-userv1 && \
-rm -f linshare.tar.bz2
-
-
-RUN URL="https://nexus.linagora.${EXT}/service/local/artifact/maven/content?r=linshare-${CHANNEL}&g=org.linagora.linshare&a=linshare-core&c=documentation-ws-api-userv2&v=${VERSION}"; \
- wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2 "${URL}&p=tar.bz2" \
- && wget --no-check-certificate --progress=bar:force:noscroll \
- -O linshare.tar.bz2.sha1 "${URL}&p=tar.bz2.sha1" \
- && sed -i 's#^\(.*\)#\1\tlinshare.tar.bz2#' linshare.tar.bz2.sha1 \
- && sha1sum -c linshare.tar.bz2.sha1 --quiet && rm -f linshare.tar.bz2.sha1
-
-RUN tar -jxf linshare.tar.bz2 -C /usr/local/apache2/htdocs && \
-chown -R www-data /usr/local/apache2/htdocs/linshare-core && \
-mv -v /usr/local/apache2/htdocs/linshare-core /usr/local/apache2/htdocs/documentation-ws-api-userv2 && \
-rm -f linshare.tar.bz2
-
-COPY ./httpd.extra.conf /usr/local/apache2/conf/extra/httpd.extra.conf
-RUN cat /usr/local/apache2/conf/extra/httpd.extra.conf >> /usr/local/apache2/conf/httpd.conf
-
-COPY ./linshare-documentation.conf /usr/local/apache2/conf/extra/linshare-documentation.conf
-
-EXPOSE 80
+COPY favicon-16x16.png /usr/share/nginx/html/favicon-16x16.png
+COPY favicon-32x32.png /usr/share/nginx/html/favicon-32x32.png
+ENV URL "./swagger.json"
+RUN sed -i -e '/server_name/ i\    autoindex on;' /etc/nginx/nginx.conf
+RUN sed -i -e 's;/usr/share/nginx/html/;/usr/share/nginx/linshare/;g' /etc/nginx/nginx.conf
+RUN sed -i -e '/<style>/ a\      .try-out__btn { display: none;}'  /usr/share/nginx/html/index.html
+COPY ./run.sh /usr/share/nginx/
