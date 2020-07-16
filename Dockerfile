@@ -3,7 +3,7 @@ FROM swaggerapi/swagger-ui
 MAINTAINER LinShare <linshare@linagora.com>
 
 ARG VERSION="4.0.0"
-ARG CHANNEL=snapshots
+ARG CHANNEL=releases
 
 ENV LINSHARE_VERSION=$VERSION
 RUN apk add wget bzip2
