@@ -20,7 +20,7 @@ do
     l_dir=${NGINX_ROOT_LS}/$(echo $l_file| sed -e 's/.json$//')
     cp -r $NGINX_ROOT ${l_dir}/
     cp -v /swagger/${l_file} ${l_dir}/swagger.json
-    l_title=$(grep title ${l_dir}/swagger.json | cut -d '"' -f 4)
+    l_title=$(grep title ${l_dir}/swagger.json | head -n 1 | cut -d '"' -f 4)
     sed -i -e "s/Swagger UI/LinShare ${l_title}/g" ${l_dir}/index.html
     # find ${l_dir} -type f -regex ".*\.\(html\|js\|css\)" -exec sh -c "gzip < {} > {}.gz" \;
 done
