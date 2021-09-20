@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui
+FROM swaggerapi/swagger-ui:v3.52.3
 
 MAINTAINER LinShare <linshare@linagora.com>
 
