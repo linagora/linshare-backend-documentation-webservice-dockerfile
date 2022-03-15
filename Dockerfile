@@ -2,7 +2,7 @@ FROM swaggerapi/swagger-ui:v3.52.3
 
 MAINTAINER LinShare <linshare@linagora.com>
 
-ARG VERSION="5.0.1-saas1"
+ARG VERSION="5.0.2"
 ARG CHANNEL="releases"
 
 ENV LINSHARE_VERSION=$VERSION
