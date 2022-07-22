@@ -2,8 +2,8 @@ FROM swaggerapi/swagger-ui:v3.52.3
 
 MAINTAINER LinShare <linshare@linagora.com>
 
-ARG VERSION="5.1.0"
-ARG CHANNEL=releases
+ARG VERSION="5.1.1"
+ARG CHANNEL="releases"
 
 ENV LINSHARE_VERSION=$VERSION
 RUN apk add wget bzip2
